@@ -46,7 +46,7 @@ then
 	part2="2"
 	part3="3"
 	parted -s $drive \
-		mklabel gpt
+		mklabel gpt \
 		mkpart EFI fat32 1MiB 512MiB \
 		set 1 esp on \
 		mkpart SWAP linux-swap 512MiB $swapsize.5GiB \
