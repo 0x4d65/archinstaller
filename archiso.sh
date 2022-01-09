@@ -40,7 +40,7 @@ read drive
 echo "Enter swap size, in GiB" 
 echo "[ ex. 2 ]"
 read swapsize
-if [ $systemType = "uefi"]
+if [ $systemType = "uefi" ]
 then
 	part1 = "1"
 	part2 = "2"
@@ -58,7 +58,7 @@ then
 	mount $drive$part1 /mnt/boot
 	swapon $drive$part2
 	mount $drive$part3 /mnt
-elif [ $systemType = "bios"]
+elif [ $systemType = "bios" ]
 then
 	part1 = "1"
 	part2 = "2"
