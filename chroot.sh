@@ -1,10 +1,10 @@
-drive = $1
-systype = $2
-sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8' /etc/locale.gen
+drive=$1
+systype=$2
+sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 echo "Language"
 echo "[ ex. pl_PL ]"
 read lang 
-sed -i "s/#$lang.UTF-8 UTF-8/$lang.UTF-8 UTF-8" /etc/locale.gen
+sed -i "s/#$lang.UTF-8 UTF-8/$lang.UTF-8 UTF-8/" /etc/locale.gen
 locale-gen
 localectl set-locale $lang.UTF-8
 echo "Hostname"
