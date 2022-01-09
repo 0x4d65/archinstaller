@@ -86,4 +86,4 @@ mkdir /mnt/usr/share/archinstaller
 cp ./chroot.sh /mnt/usr/share/archinstaller/
 echo "Installing bootloader"
 echo "Running script in chroot."
-arch-chroot /mnt sh /usr/share/archinstaller/chroot.sh $drive $systemType
+arch-chroot /mnt sh /usr/share/archinstaller/chroot.sh

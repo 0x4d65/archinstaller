@@ -1,5 +1,4 @@
-drive=$1
-systype=$2
+
 sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 echo "Language"
 echo "[ ex. pl_PL ]"
@@ -22,17 +21,11 @@ passwd
 pacman -Sy intel-ucode amd-ucode --noconfirm
 systemctl enable NetworkManager.service
 echo "Installing a bootloader"
-if [ systype = "uefi" ]
-then
-    echo "Installing grub for uefi"
-    grub-install --target=x86_64-efi --efi-directory /boot/
-    grub-mkconfig -o /boot/grub/grub.cfg
-elif [ systype = "bios" ]
-then 
-    echo "Installing grub for bios"
-    grub-install --target=i386-pc 
-    grub-mkconfig -o /boot/grub/grub.cfg
-fi
+echo "What drive to install the bootloader to?"
+echo "[ /dev/sdX ]"
+read drive
+grub-install $drive
+grub-mkconfig -o /boot/grub/grub.cfg
 echo "Make a new user"
 echo "Username"
 read username
