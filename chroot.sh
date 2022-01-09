@@ -22,12 +22,12 @@ passwd
 pacman -Sy intel-ucode amd-ucode --noconfirm
 systemctl enable NetworkManager.service
 echo "Installing a bootloader"
-if [systype = "uefi"]
+if [ systype = "uefi" ]
 then
     echo "Installing grub for uefi"
     grub-install --target=x86_64-efi --efi-directory /boot/
     grub-mkconfig -o /boot/grub/grub.cfg
-elif [systype = "bios"]
+elif [ systype = "bios" ]
 then 
     echo "Installing grub for bios"
     grub-install --target=i386-pc 

@@ -42,9 +42,9 @@ echo "[ ex. 2 ]"
 read swapsize
 if [ $systemType = "uefi" ]
 then
-	part1 = "1"
-	part2 = "2"
-	part3 = "3"
+	part1="1"
+	part2="2"
+	part3="3"
 	parted -s $drive \
 		mklabel gpt
 		mkpart EFI fat32 1MiB 512MiB \
@@ -60,8 +60,8 @@ then
 	mount $drive$part3 /mnt
 elif [ $systemType = "bios" ]
 then
-	part1 = "1"
-	part2 = "2"
+	part1="1"
+	part2="2"
 	parted -s $drive \
 		mklabel msdos \
 		mkpart primary linux-swap 1MiB $swapsize \
