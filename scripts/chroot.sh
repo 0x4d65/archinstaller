@@ -18,7 +18,8 @@ echo KEYMAP=$keymap >> vconsole.conf
 echo "Language"
 echo "[ ex. pl_PL ]"
 read lang
-if [ $lang != en_US ] then
+if [ $lang != en_US ]
+then
     sed -i "s/#$lang.UTF-8 UTF-8/$lang.UTF-8 UTF-8/" /etc/locale.gen
 fi
 locale-gen
@@ -41,7 +42,8 @@ passwd $username
 pacman -Sy intel-ucode amd-ucode --noconfirm
 systemctl enable NetworkManager.service
 echo "Installing a bootloader"
-if [ -d /sys/firmware/efi/efivars ] then
+if [ -d /sys/firmware/efi/efivars ]
+then
     grub-install $drive --target=x86_64-efi --efi-directory=/boot/ --bootloader-id=GRUB
     grub-mkconfig -o /boot/grub/grub.cfg
 else
