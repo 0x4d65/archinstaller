@@ -35,6 +35,9 @@ read mirrors
 echo "What drive do you want to install arch to"
 echo "[ /dev/sdX ]"
 read drive
+echo "Is it a NVME drive?"
+echo "[yes, no]"
+read isNVME
 echo "What kernel do you want to use"
 echo "[ linux, linux-lts, linux-zen, linux-hardened ]"
 read kernel
@@ -43,9 +46,15 @@ pacman -Sy
 
 if [ $systemType = "uefi" ]
 then
-	part1="1"
-	part2="2"
-	part3="3"
+	if [ $isNVME = "yes" ] then
+		part1="p1"
+		part2="p2"
+		part3="p3"
+	elif [ $isNVME = "no" ] then
+		part1="1"
+		part2="2"
+		part3="3"
+	fi
 	parted -s $drive \
 		mklabel gpt \
 		mkpart EFI fat32 1MiB 512MiB \
