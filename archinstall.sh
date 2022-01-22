@@ -41,7 +41,8 @@ read isNVME
 echo "What kernel do you want to use"
 echo "[ linux, linux-lts, linux-zen, linux-hardened ]"
 read kernel
-reflector -c $mirrors
+rm /etc/pacman.d/mirrorlist
+reflector -c $mirrors >> /etc/pacman.d/mirrorlist
 pacman -Sy 
 
 if [ $systemType = "uefi" ]
@@ -50,7 +51,7 @@ then
 		part1="p1"
 		part2="p2"
 		part3="p3"
-	elif [ $isNVME = "no" ] then
+	else
 		part1="1"
 		part2="2"
 		part3="3"
