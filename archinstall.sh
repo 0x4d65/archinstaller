@@ -47,7 +47,8 @@ pacman -Sy
 
 if [ $systemType = "uefi" ]
 then
-	if [ $isNVME = "yes" ] then
+	if [ $isNVME = "yes" ] 
+	then
 		part1="p1"
 		part2="p2"
 		part3="p3"
