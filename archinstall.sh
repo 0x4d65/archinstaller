@@ -43,8 +43,8 @@ echo "[ linux, linux-lts, linux-zen, linux-hardened ]"
 read kernel
 rm /etc/pacman.d/mirrorlist
 reflector -c $mirrors >> /etc/pacman.d/mirrorlist
-sed -i "s/#ParallelDownloads = 5/ParallelDownloads = 5/"
-sed -i "s/#Color/Color/"
+sed -i "s/#ParallelDownloads = 5/ParallelDownloads = 5/" /etc/pacman.conf
+sed -i "s/#Color/Color/" /etc/pacman.conf
 pacman -Sy 
 
 if [ $systemType = "uefi" ]
