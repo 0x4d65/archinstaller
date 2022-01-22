@@ -4,16 +4,16 @@ pause ()
 {
 	read -n 1 -s -r -p "Press any key to continue"
 }
-
+echo "Archinstaller beta-UNTESTED"
 #data collection
 if [ -d /sys/firmware/efi/efivars/ ]
 then
 	systemType="uefi"
+	echo "SystemType: UEFI"
 else
 	systemType="bios"
+	echo "SystemType: BIOS/UEFI-CSM"
 fi
-
-echo "System type: $systemType"
 
 #Checking for internet connection
 ping archlinux.org -c 4 -q
@@ -28,18 +28,19 @@ fi
 #Updating system clock
 timedatectl set-ntp true
 echo Updated system clock
-echo "Updating mirrors"
+# Getting info
 echo "What country do you want to have mirrors from?"
-echo "[ ex. us ]"
+echo "[ ex. pl ]"
 read mirrors
-reflector -f 10 -c $mirrors
-pacman -Sy 
-echo "Type path to device that you want to install arch to"
+echo "What drive do you want to install arch to"
 echo "[ /dev/sdX ]"
 read drive
-echo "Enter swap size, in GiB" 
-echo "[ ex. 2 ]"
-read swapsize
+echo "What kernel do you want to use"
+echo "[ linux, linux-lts, linux-zen, linux-hardened ]"
+read kernel
+reflector -c $mirrors
+pacman -Sy 
+
 if [ $systemType = "uefi" ]
 then
 	part1="1"
@@ -49,8 +50,8 @@ then
 		mklabel gpt \
 		mkpart EFI fat32 1MiB 512MiB \
 		set 1 esp on \
-		mkpart SWAP linux-swap 512MiB $swapsize.5GiB \
-		mkpart MAIN ext4 $swapsize.5GiB 100%
+		mkpart SWAP linux-swap 512MiB 4.5GiB \
+		mkpart MAIN ext4 4.5GiB 100%
 	
 	mkfs.fat -F 32 $drive$part1
 	mkswap $drive$part2
@@ -65,26 +66,18 @@ then
 	part2="2"
 	parted -s $drive \
 		mklabel msdos \
-		mkpart primary linux-swap 1MiB $swapsize \
-		mkpart primary ext4 $swapsize 100% \
+		mkpart primary linux-swap 1MiB 4GiB \
+		mkpart primary ext4 4GiB 100% \
 		set 2 boot on
 	mkswap $drive$part1
 	swapon $drive$part1
 	mkfs.ext4 $drive$part2
 	mount $drive$part2 /mnt
 fi
-echo "What kernel do you want to use"
-echo "[ package name ex. linux-lts if unsure use 'linux']"
-read kernel
-pacstrap /mnt base base-devel $kernel $kernel-headers linux-firmware nano vim networkmanager man-db man-pages texinfo grub sudo 
+
+pacstrap /mnt base base-devel $kernel $kernel-headers linux-firmware nano vim networkmanager man-db man-pages texinfo grub sudo efibootmgr
 genfstab -U /mnt >> /mnt/etc/fstab
-echo "Where do you live?"
-echo "[ ex. Europe/Warsaw, US/Arizona ]"
-read locale
-arch-chroot /mnt ln -sf /usr/share/zoneinfo/$locale /etc/localtime
-arch-chroot /mnt hwclock --systohc
 mkdir /mnt/usr/share/archinstaller
-cp ./chroot.sh /mnt/usr/share/archinstaller/
-echo "Installing bootloader"
+cp ./scripts/* /mnt/usr/share/archinstaller/
 echo "Running script in chroot."
 arch-chroot /mnt sh /usr/share/archinstaller/chroot.sh
