@@ -15,6 +15,10 @@ echo "[ ex. us ]"
 read keymap
 echo KEYMAP=$keymap >> vconsole.conf
 #
+echo "System type"
+echo "[UEFI, BIOS]"
+read systype
+#
 echo "Language"
 echo "[ ex. pl_PL ]"
 read lang
@@ -42,7 +46,7 @@ passwd $username
 pacman -Sy intel-ucode amd-ucode --noconfirm
 systemctl enable NetworkManager.service
 echo "Installing a bootloader"
-if [ -d /sys/firmware/efi/efivars ]
+if [ $systype = "UEFI" ]
 then
     grub-install $drive --target=x86_64-efi --efi-directory=/boot/ --bootloader-id=GRUB
     grub-mkconfig -o /boot/grub/grub.cfg
