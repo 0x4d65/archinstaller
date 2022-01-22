@@ -70,9 +70,9 @@ then
 	mkswap $drive$part2
 	mkfs.ext4 $drive$part3
 	mkdir /mnt/boot
-	mount $drive$part1 /mnt/boot
 	swapon $drive$part2
 	mount $drive$part3 /mnt
+	mount $drive$part1 /mnt/boot
 elif [ $systemType = "bios" ]
 then
 	part1="1"
