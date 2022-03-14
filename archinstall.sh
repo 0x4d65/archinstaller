@@ -77,9 +77,10 @@ then
 	mkfs.fat -F 32 $drive$part1
 	mkswap $drive$part2
 	mkfs.ext4 $drive$part3
-	mkdir /mnt/boot
+	
 	swapon $drive$part2
 	mount $drive$part3 /mnt
+	mkdir /mnt/boot
 	mount $drive$part1 /mnt/boot
 elif [ $systemType = "bios" ]
 then
