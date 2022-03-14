@@ -1,10 +1,13 @@
 #!/bin/bash
 
+pacman -S libnewt --noconfirm --needed
+wtbacktitle="archinstall"
+wtinputfix="3>&1 1>&2 2>&3"
 pause ()
 {
 	read -n 1 -s -r -p "Press any key to continue"
 }
-echo "Archinstaller beta-UNTESTED"
+echo "Archinstaller TUI"
 #data collection
 if [ -d /sys/firmware/efi/efivars/ ]
 then
@@ -23,6 +26,7 @@ then
 else
 	echo "Connected to internet: No"
 	echo "Cannot continue."
+	whiptail --msgbox "Not connected to internet! Cannot continue." 8 30 --title "ERROR!" --backtitle $wtbacktitle
 	exit 1
 fi
 #Updating system clock
@@ -31,16 +35,20 @@ echo Updated system clock
 # Getting info
 echo "What country do you want to have mirrors from?"
 echo "[ ex. pl ]"
-read mirrors
+mirrors=$(whiptail --inputbox "Where do you want your mirrors from: " 8 40 us --title Mirrors --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 echo "What drive do you want to install arch to"
 echo "[ /dev/sdX ]"
-read drive
+drive=$(whiptail --inputbox "Enter target device path: " 8 30 /dev/sda --title Disk --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 echo "Is it a NVME drive?"
 echo "[yes, no]"
-read isNVME
+if (whiptail --yesno "Is your drive nvme or emmc?" 8 35 --title Disk --backtitle $wtbacktitle) then
+	isNVME="yes"
+else
+	isNVME="no"
+fi
 echo "What kernel do you want to use"
 echo "[ linux, linux-lts, linux-zen, linux-hardened ]"
-read kernel
+kernel=$(whiptail --inputbox "Enter the kernel package name: " 8 40 linux --title Kernel --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 rm /etc/pacman.d/mirrorlist
 reflector -c $mirrors >> /etc/pacman.d/mirrorlist
 sed -i "s/#ParallelDownloads = 5/ParallelDownloads = 5/" /etc/pacman.conf
@@ -88,7 +96,7 @@ then
 	mount $drive$part2 /mnt
 fi
 
-pacstrap /mnt base base-devel $kernel $kernel-headers linux-firmware nano vim networkmanager man-db man-pages texinfo grub sudo efibootmgr
+pacstrap /mnt base base-devel $kernel $kernel-headers linux-firmware nano vim networkmanager man-db man-pages texinfo grub sudo efibootmgr libnewt
 genfstab -U /mnt >> /mnt/etc/fstab
 mkdir /mnt/usr/share/archinstaller
 cp ./scripts/* /mnt/usr/share/archinstaller/
