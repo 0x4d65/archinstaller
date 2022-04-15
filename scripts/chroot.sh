@@ -1,3 +1,4 @@
+wtbacktitle="chroot-archinstall"
 # ASK
 echo "Set your timezone"
 tzselect | cat >> ./tz.tmp
@@ -7,21 +8,21 @@ hwclock --systohc
 #
 echo "Hostname"
 echo "[ ex. mycomputer ]"
-read hostname
+hostname=$(whiptail --inputbox "Hostname: " 8 30 localhost --title Hostname --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 echo $hostname >> /etc/hostname
 #
 echo "Keymap"
 echo "[ ex. us ]"
-read keymap
+keymap=$(whiptail --inputbox "Keymap: " 8 30 us --title Keymap --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 echo KEYMAP=$keymap >> vconsole.conf
 #
 echo "System type"
 echo "[UEFI, BIOS]"
-read systype
+systype=$(whiptail --menu "System type:" 10 20 2 UEFI "" BIOS "" --title "System type" --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 #
 echo "Language"
 echo "[ ex. pl_PL ]"
-read lang
+lang=$(whiptail --inputbox "Language: " 8 30 en_US --title Lang --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 if [ $lang != en_US ]
 then
     sed -i "s/#$lang.UTF-8 UTF-8/$lang.UTF-8 UTF-8/" /etc/locale.gen
@@ -31,22 +32,24 @@ echo LANG=$lang.UTF-8 >> /etc/locale.conf
 #
 echo "What drive to install the bootloader to?"
 echo "[ /dev/sdX ]"
-read drive
+drive=$(whiptail --inputbox "Enter target device path: " 8 30 /dev/sda --title Bootloader --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
+
 #
 echo "Set root password"
+echo "Setting password for user: root"
 passwd
 #
 echo "Make a new user"
 echo "Username"
-read username
+username=$(whiptail --inputbox "Username: " 8 30 user --title Username --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 useradd -m $username -G wheel
-echo "Password"
+echo "Setting password for user: $username"
 passwd $username  
 # DO
 pacman -Sy intel-ucode amd-ucode --noconfirm
-systemctl enable NetworkManager.service
+systemctl enable NetworkManager
 echo "Installing a bootloader"
-if [ $systype = "UEFI" ]
+if (whiptail --yesno "Is your system using UEFI" 7 30 --title "System type" --backtitle $wtbacktitle)
 then
     grub-install $drive --target=x86_64-efi --efi-directory=/boot/ --bootloader-id=GRUB
     grub-mkconfig -o /boot/grub/grub.cfg
