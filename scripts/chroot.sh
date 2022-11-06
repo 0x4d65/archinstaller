@@ -16,10 +16,6 @@ echo "[ ex. us ]"
 keymap=$(whiptail --inputbox "Keymap: " 8 30 us --title Keymap --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 echo KEYMAP=$keymap >> vconsole.conf
 #
-echo "System type"
-echo "[UEFI, BIOS]"
-systype=$(whiptail --menu "System type:" 10 20 2 UEFI "" BIOS "" --title "System type" --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
-#
 echo "Language"
 echo "[ ex. pl_PL ]"
 lang=$(whiptail --inputbox "Language: " 8 30 en_US --title Lang --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
@@ -49,12 +45,7 @@ passwd $username
 pacman -Sy intel-ucode amd-ucode --noconfirm
 systemctl enable NetworkManager
 echo "Installing a bootloader"
-if (whiptail --yesno "Is your system using UEFI" 7 30 --title "System type" --backtitle $wtbacktitle)
-then
-    grub-install $drive --target=x86_64-efi --efi-directory=/boot/ --bootloader-id=GRUB
-    grub-mkconfig -o /boot/grub/grub.cfg
-else
-    grub-install $drive --target=i386-pc
-    grub-mkconfig -o /boot/grub/grub.cfg
-fi
+target=$(whiptail --menu "Target: " 7 30 2 x86_64-efi "UEFI" i386-pc "BIOS" --title "System type" --backtitle $wtbacktitle  3>&1 1>&2 2>&3)
+grub-install $drive --target=$target --efi-directory=/boot/ --bootloader-id=GRUB
+grub-mkconfig -o /boot/grub/grub.cfg
 echo "Instalation finished!"
