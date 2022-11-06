@@ -50,7 +50,7 @@ echo "What kernel do you want to use"
 echo "[ linux, linux-lts, linux-zen, linux-hardened ]"
 kernel=$(whiptail --inputbox "Enter the kernel package name: " 8 40 linux --title Kernel --backtitle $wtbacktitle 3>&1 1>&2 2>&3)
 rm /etc/pacman.d/mirrorlist
-reflector -c $mirrors >> /etc/pacman.d/mirrorlist
+reflector -p "http,https" -c $mirrors >> /etc/pacman.d/mirrorlist
 sed -i "s/#ParallelDownloads = 5/ParallelDownloads = 5/" /etc/pacman.conf
 sed -i "s/#Color/Color/" /etc/pacman.conf
 pacman -Sy 
