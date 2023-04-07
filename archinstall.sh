@@ -97,7 +97,7 @@ then
 	mount $drive$part2 /mnt
 fi
 
-pacstrap /mnt base base-devel $kernel $kernel-headers linux-firmware nano vim networkmanager man-db man-pages texinfo grub sudo efibootmgr libnewt
+pacstrap -K /mnt base base-devel $kernel $kernel-headers linux-firmware nano vim networkmanager man-db man-pages texinfo grub sudo efibootmgr libnewt
 genfstab -U /mnt >> /mnt/etc/fstab
 mkdir /mnt/usr/share/archinstaller
 cp ./scripts/* /mnt/usr/share/archinstaller/
