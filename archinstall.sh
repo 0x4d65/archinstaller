@@ -2,7 +2,7 @@
 
 pacman -S libnewt --noconfirm --needed
 wtbacktitle="archinstall"
-wtinputfix="3>&1 1>&2 2>&3"
+#wtinputfix="3>&1 1>&2 2>&3"
 pause ()
 {
 	read -n 1 -s -r -p "Press any key to continue"
@@ -97,7 +97,7 @@ then
 	mount $drive$part2 /mnt
 fi
 
-pacstrap -K /mnt base base-devel $kernel $kernel-headers linux-firmware nano vim networkmanager man-db man-pages texinfo grub sudo efibootmgr libnewt
+pacstrap -K /mnt base base-devel "$kernel" $kernel-headers linux-firmware nano vim networkmanager man-db man-pages texinfo grub sudo efibootmgr libnewt
 genfstab -U /mnt >> /mnt/etc/fstab
 mkdir /mnt/usr/share/archinstaller
 cp ./scripts/* /mnt/usr/share/archinstaller/
